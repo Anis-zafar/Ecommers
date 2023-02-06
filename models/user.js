@@ -5,15 +5,15 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  Email: {
+  email: {
     type: String,
     required: true,
   },
-  Password: {
-    type: Number,
+  password: {
+    type: String,
     required: true,
   },
-  Cart: {
+  cart: {
     type: Buffer,
   },
 });
