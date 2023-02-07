@@ -19,8 +19,23 @@ const is_valid = [
     .isLength(8)
     .withMessage("password must be 8 characters"),
 ];
-// body("email").isEmail().notEmpty(),
-//   body("password").notEmpty().isLength({ min: 8 }),
-//   body("name").notEmpty();
 
-module.exports = is_valid;
+
+const auth = async (req, res, next) => {
+  try {
+    const split = req.headers["authorization"].split(" ");
+    const token = split[1];
+    const decode = jwt.verify(token, process.env.AccessWebToken);
+    const user = await User.findOne({ _id: decode.id});
+    if (!user) {
+      throw new Error();
+    }
+    req.token = token;
+    req.user = user;
+    next();
+  } catch (error) {
+    res.status(401).json("please authenticate proper");
+  }
+};
+
+module.exports = is_valid,auth;

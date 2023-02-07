@@ -8,7 +8,7 @@ const database = async () => {
       useUnifiedTopology: true,
       // useCreateIndex: false,
     });
-    console.log("Sucessfully Connected to DATABASE on Cloud");
+    console.log("Sucessfully Connected to DATABASE on localhost");
   } catch (error) {
     console.log("error");
   }
