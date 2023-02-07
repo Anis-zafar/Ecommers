@@ -1,6 +1,7 @@
 const { body, validatorResult, check } = require("express-validator");
 const User = require("../models/user");
-
+const jwt = require("jsonwebtoken");
+require('dotenv').config();
 const is_valid = [
   check("name")
     .not()
@@ -20,13 +21,12 @@ const is_valid = [
     .withMessage("password must be 8 characters"),
 ];
 
-
 const auth = async (req, res, next) => {
   try {
     const split = req.headers["authorization"].split(" ");
     const token = split[1];
-    const decode = jwt.verify(token, process.env.AccessWebToken);
-    const user = await User.findOne({ _id: decode.id});
+    const decode = jwt.verify(token, process.env.accesstokenkey);
+    const user = await User.findOne({ _id: decode.id });
     if (!user) {
       throw new Error();
     }
@@ -38,4 +38,4 @@ const auth = async (req, res, next) => {
   }
 };
 
-module.exports = is_valid,auth;
+module.exports = { is_valid, auth };

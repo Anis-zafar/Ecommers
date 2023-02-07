@@ -1,10 +1,12 @@
 const express = require("express");
 const Bcrypt = require("bcryptjs");
 const User = require("../models/user");
-const Products = require("../models/products");
 const { genSalt } = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { body, validationResult } = require("express-validator");
+
+// api
+
 const Signup = async (req, res) => {
   try {
     // const user = new User(req.body);
@@ -36,7 +38,7 @@ const Login = async (req, res) => {
   try {
     const email = req.body.email;
     const password = req.body.password;
-    const data = await User.findOne({ email }, {email:1,password:1});
+    const data = await User.findOne({ email }, { email: 1, password: 1 });
     // console.log(data);
     if (!data) {
       return res.status(404).json({ error: error.array() });
@@ -56,10 +58,16 @@ const Login = async (req, res) => {
     return res.status(400).json({ error: error.message });
   }
 };
-
-const addproduct = async (req, res) => {
-  const data = new Products(req.body);
-  console.log(data);
+const getuser = async (req, res) => {
+  const id = req.params.id;
+  if (!id) {
+    return res.stauts(404).send("in valid id");
+  }
+  try {
+    const data = await User.findById(id);
+    return res.status(200).json(data);
+  } catch (error) {
+    return res.status(400).send({ error: error });
+  }
 };
-
-module.exports = { Signup, Login, addproduct };
+module.exports = { Signup, Login, getuser };
