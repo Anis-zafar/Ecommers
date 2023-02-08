@@ -70,4 +70,9 @@ const getuser = async (req, res) => {
     return res.status(400).send({ error: error });
   }
 };
-module.exports = { Signup, Login, getuser };
+
+const users = async (req, res) => {
+  const data = await User.find()
+  return res.status(200).send(data)
+}
+module.exports = { Signup, Login, getuser,users };

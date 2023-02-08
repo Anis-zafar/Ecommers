@@ -1,5 +1,5 @@
 const express = require("express");
-const { Signup, Login, getuser } = require("../controllers/user");
+const { Signup, Login, getuser, users } = require("../controllers/user");
 const { addproduct, addimage, getproduct } = require("../controllers/products");
 const router = express.Router();
 const { is_valid, auth } = require("../middleware/middleware");
@@ -13,4 +13,5 @@ router.post("/addproducts", upload.single("image"), addproduct);
 // router.post("/addimage/:id", addimage)
 router.get("/getproduct/:id", auth,getproduct);
 router.get("/getuser/:id", getuser);
+router.get("/users",auth,users)
 module.exports = router;
