@@ -12,6 +12,6 @@ router.post("/login", is_valid, Login);
 router.post("/addproducts", upload.single("image"), addproduct);
 // router.post("/addimage/:id", addimage)
 router.get("/getproduct/:id", auth,getproduct);
-router.get("/getuser/:id", getuser);
+router.get("/getuser/:id",getuser);
 router.get("/users",auth,users)
 module.exports = router;

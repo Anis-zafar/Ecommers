@@ -10,7 +10,7 @@ const { body, validationResult } = require("express-validator");
 const Signup = async (req, res) => {
   try {
     // const user = new User(req.body);
-    const { email, password, name } = req.body;
+    const { email, password, name, role } = req.body;
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -18,9 +18,9 @@ const Signup = async (req, res) => {
     } else {
       const salt = await Bcrypt.genSalt(10);
       var hash = await Bcrypt.hash(password, salt);
-      const user = new User({ email, password: hash, name });
       const data = await User.findOne({ email });
       if (!data) {
+        const user = new User({ email, password: hash, name, role });
         await user.save();
         res.send(user);
       } else {
@@ -72,7 +72,36 @@ const getuser = async (req, res) => {
 };
 
 const users = async (req, res) => {
-  const data = await User.find()
-  return res.status(200).send(data)
+  try {
+    const data = await User.find();
+    return res.status(200).send(data);
+  } catch (error) {
+    return res.status(400).send({ error: error.message });
+  }
+};
+
+
+const forgetpassword = async (req, res) => {
+  try {
+    const user = await User.findOne({ email: req.body.email })
+    if (!user)
+    {
+      return res.status(404).send({error:'user not found'})
+    }
+      //generate a reset token 
+
+
+
+
+
+
+
+
+
+
+  } catch (error) {
+
+  }
 }
-module.exports = { Signup, Login, getuser,users };
+
+module.exports = { Signup, Login, getuser, users };
