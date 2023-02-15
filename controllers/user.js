@@ -89,7 +89,7 @@ const forgetpassword = async (req, res) => {
       return res.status(404).send({error:'user not found'})
     }
       //generate a reset token 
-
+      
 
 
 

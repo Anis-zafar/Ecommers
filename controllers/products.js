@@ -8,15 +8,14 @@ const addproduct = async (req, res) => {
   try {
     // console.log(req.file);
     if (!req.file) {
-      return res.status(400).send("No image provided");
+      res.status(200).send("No image provided");
     }
     const image = await sharp(req.file.buffer)
       .resize({ width: 250, height: 250 })
       .png()
       .toBuffer()
       .toString("base64");
-    console.log(typeof(image));
-    
+    console.log(typeof image);
 
     const product = new Products({
       name: req.body.name,
@@ -26,7 +25,7 @@ const addproduct = async (req, res) => {
     });
     // console.log(data);
     await product.save();
-    return res.send("Product created successfully");
+    return res.send("Product created successfully").status(201);
   } catch (error) {
     // console.log(error);
     return res.status(500).send({ error: error.message });
