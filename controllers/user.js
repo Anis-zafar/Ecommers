@@ -4,7 +4,9 @@ const User = require("../models/user");
 const { genSalt } = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { body, validationResult } = require("express-validator");
-
+const products = require("../models/products");
+const orders = require("../models/orders");
+const { $where, db } = require("../models/products");
 // api
 
 const Signup = async (req, res) => {
@@ -80,28 +82,49 @@ const users = async (req, res) => {
   }
 };
 
-
 const forgetpassword = async (req, res) => {
   try {
-    const user = await User.findOne({ email: req.body.email })
-    if (!user)
-    {
-      return res.status(404).send({error:'user not found'})
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) {
+      return res.status(404).send({ error: "user not found" });
     }
-      //generate a reset token 
-      
+    //generate a reset token
+  } catch (error) {}
+};
 
-
-
-
-
-
-
-
-
-  } catch (error) {
-
+const addproducttocart = async (req, res) => {
+  const id = req.params.id;
+  const check = await orders.findOne({ user_id: req.user.id });
+  if (!check) {
+    var order = new orders({ user_id: req.user.id, product_id: id });
+    await order.save();
+  } else {
+    check.product_id.push(id);
+    await check.save();
   }
-}
+  const data = await products.findById({ _id: id });
+  const user = await User.findById({ _id: req.user.id });
+  return res.status(200).send(`${data}, ${user},${check}`);
+};
 
-module.exports = { Signup, Login, getuser, users };
+const removeproduct = async (req, res) => {
+  // const user  = await orders.findOne(
+  //   { product_id: req.params.id },
+  //   { product_id: 1 }
+  // );
+  // if (!user) {
+  //   return res.status(400).send("no product available");
+  // }
+  // const data = user.product_id.filter((i) => i === req.params.id);
+  // return res.status(200).send(data);
+  const use = await orders.findOneAndUpdate({ $pull: { product_id: req.params.id } })
+  res.send(use)
+};
+module.exports = {
+  Signup,
+  Login,
+  getuser,
+  users,
+  addproducttocart,
+  removeproduct,
+};

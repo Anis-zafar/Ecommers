@@ -15,21 +15,15 @@ const ProductSchema = new mongoose.Schema(
       required: true,
     },
     image: {
-      // type: String,
       type: Buffer,
-      // validate: {
-      //   validator: (image) => {
-      //     return image.lenght <= 20000000;
-      //   },
-      //   message: "image must be less than 20MB",
-      // },
     },
+    user_id: {
+      type:String
+    }
   },
   {
     timestamps: true,
   }
 );
-
 const Product = mongoose.model("product", ProductSchema);
-
 module.exports = Product;

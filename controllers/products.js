@@ -3,20 +3,22 @@ const multer = require("multer");
 const sharp = require("sharp");
 const Products = require("../models/products");
 const { binary_to_base58 } = require("base58-js");
+const { findByIdAndUpdate } = require("../models/products");
 
 const addproduct = async (req, res) => {
   try {
     // console.log(req.file);
     if (!req.file) {
-      res.status(200).send("No image provided");
+      image = "no image";
+    } else {
+      var data = req.file.buffer;
+      var image = await sharp(data)
+        .resize({ width: 250, height: 250 })
+        .png()
+        .toBuffer()
+        .toString("base64");
+      // console.log(typeof image);
     }
-    const image = await sharp(req.file.buffer)
-      .resize({ width: 250, height: 250 })
-      .png()
-      .toBuffer()
-      .toString("base64");
-    console.log(typeof image);
-
     const product = new Products({
       name: req.body.name,
       description: req.body.description,
@@ -28,26 +30,28 @@ const addproduct = async (req, res) => {
     return res.send("Product created successfully").status(201);
   } catch (error) {
     // console.log(error);
-    return res.status(500).send({ error: error.message });
+    return res.status(400).send({ error: error.message });
   }
 };
 
 const addimage = async (req, res) => {
-  if (!req.file) {
-    return res.status(400).send("no image provided");
-  }
-  const image = await sharp(req.file.buffer)
-    .resize({ width: 250, height: 250 })
-    .jpeg()
-    .toBuffer();
-  const newImage = new Products(req.params.id, { _id: 1 });
-  console.log(newImage);
   try {
-    newImage.image = image;
-    res.set("Content-Type", "image/jpeg");
-    return res.status(201).send(`image successfully uploaded ${newImage}`);
+    // console.log(req);
+
+    if (!req.file) {
+      return res.status(400).send({ message: "provide image" });
+    } else {
+      var data = req.file.buffer;
+      var image = sharp(data)
+        .resize({ width: 250, height: 250 })
+        .png()
+        .toBuffer()
+        .toString("base64");
+    }
+    await Products.findByIdAndUpdate(req.body.id, { $set: { image: image } });
+    return res.status(201).send("image added");
   } catch (error) {
-    return res.status(400).send("error uploading image");
+    return res.status(400).send({ error: error.message });
   }
 };
 
@@ -64,4 +68,8 @@ const getproduct = async (req, res) => {
   return res.send(data);
 };
 
-module.exports = { addproduct, addimage, getproduct };
+const products = async (req, res) => {
+  const data = await Products.find();
+  res.status(200).send(data);
+};
+module.exports = { addproduct, addimage, getproduct, products };

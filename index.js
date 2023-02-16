@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
 require("./config/mongoose");
 mongoose.set("strictQuery", false);
 const UserRouter = require("../Ecommers/Routes/user");
