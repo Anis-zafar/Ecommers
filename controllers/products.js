@@ -2,8 +2,8 @@ const express = require("express");
 const multer = require("multer");
 const sharp = require("sharp");
 const Products = require("../models/products");
-const { binary_to_base58 } = require("base58-js");
-const { findByIdAndUpdate } = require("../models/products");
+// const { binary_to_base58 } = require("base58-js");
+// const { findByIdAndUpdate } = require("../models/products");
 
 const addproduct = async (req, res) => {
   try {

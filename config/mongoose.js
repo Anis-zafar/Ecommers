@@ -13,5 +13,5 @@ const database = async () => {
     console.log("error");
   }
 };
-
+// module.exports = database
 database();
